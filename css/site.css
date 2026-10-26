@@ -186,6 +186,9 @@ strong { font-weight: 900; }
 }
 .scene--still .scene__hint { display: none; }
 
+/* SS-497: a frame of the game (snow, drifts, forest, dusk sky) under the kids;
+   it is wider than the world on every side, so it covers any stage shape. */
+.backdrop img { display: block; width: 100%; height: 100%; max-width: none; }
 .snow-base { width: 6000px; height: 3000px; background: linear-gradient(180deg, #fbeff3 0, #e9d3e3 400px, #d6bfd9 1200px); }
 .snow-mound { border-radius: 50%; background: radial-gradient(ellipse at 45% 20%, #fff8f6 0, #f3e2ec 45%, #dcc4dc 100%); }
 .shadow { width: 220px; height: 44px; border-radius: 50%; background: radial-gradient(closest-side, rgba(70, 50, 110, .35), transparent); }

@@ -10,10 +10,10 @@
       0.875
     ],
     "facing": "right",
-    "height": 0.8125,
+    "height": 0.81641,
     "hand": [
       0.50182,
-      0.60723
+      0.58437
     ],
     "release": 12
   },
@@ -28,10 +28,10 @@
       0.875
     ],
     "facing": "left",
-    "height": 0.8125,
+    "height": 0.81641,
     "face": [
       0.14739,
-      0.41934
+      0.40117
     ],
     "contact": 0
   },
@@ -46,14 +46,14 @@
       0.875
     ],
     "facing": "left",
-    "height": 0.8125
+    "height": 0.81641
   },
   "snowball": {
     "file": "snowball.webp",
-    "frames": 1,
-    "cols": 1,
-    "fw": 112,
-    "fh": 112,
+    "frames": 6,
+    "cols": 6,
+    "fw": 124,
+    "fh": 124,
     "anchor": [
       0.5,
       0.5
@@ -84,5 +84,49 @@
       0.5
     ],
     "scale_with_heroes": true
+  },
+  "layouts": {
+    "wide": {
+      "image": "backdrop_wide.webp",
+      "rect": [
+        -480.0,
+        -270.0,
+        2560.0,
+        1440.0
+      ],
+      "W": 1600,
+      "H": 900,
+      "thrower": {
+        "x": 395.4,
+        "y": 705.5,
+        "scale": 0.8632
+      },
+      "target": {
+        "x": 1126.5,
+        "y": 804.5,
+        "scale": 0.933
+      }
+    },
+    "tall": {
+      "image": "backdrop_tall.webp",
+      "rect": [
+        -240.0,
+        -390.0,
+        1280.0,
+        2080.0
+      ],
+      "W": 800,
+      "H": 1300,
+      "thrower": {
+        "x": 291.1,
+        "y": 551.7,
+        "scale": 0.7296
+      },
+      "target": {
+        "x": 414.4,
+        "y": 1127.2,
+        "scale": 0.9228
+      }
+    }
   }
 }

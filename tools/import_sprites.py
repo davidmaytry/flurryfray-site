@@ -8,7 +8,8 @@ sheets are copied into img/scene/ and the meta is translated into the shape
 js/scene.js reads (see the comment at its top): pixel points become 0..1 of a
 frame, "foot" becomes "anchor", "faces" becomes "facing", and so on. The
 source files are never changed. Without img/scene/meta.json the scene runs on
-placeholder shapes.
+placeholder shapes. SS-497: "layouts" brings the game-snow backdrops (wide and
+tall) with each kid's feet and sprite scale in stage world units.
 """
 import json
 import shutil
@@ -115,8 +116,30 @@ def main():
         if "held_scale" in e:  # the ball in the hand is drawn smaller than in flight
             out[name]["held_scale"] = e["held_scale"]
 
+    # SS-497: game-snow backdrops for the two stage shapes. Feet and the
+    # sprite scale of each kid come with them, in the stage's world units.
+    layouts = src_meta.get("layouts", {})
+    if layouts:
+        out["layouts"] = {}
+        for name, lay in layouts.items():
+            shutil.copyfile(SRC / lay["image"], DST / lay["image"])
+            out["layouts"][name] = {
+                "image": lay["image"],
+                "rect": lay["image_rect"],
+                "W": lay["world"][0], "H": lay["world"][1],
+                "thrower": {"x": lay["thrower"]["foot"][0], "y": lay["thrower"]["foot"][1],
+                            "scale": lay["thrower"]["sprite_scale"]},
+                "target": {"x": lay["target"]["foot"][0], "y": lay["target"]["foot"][1],
+                           "scale": lay["target"]["sprite_scale"]},
+            }
+
     (DST / "meta.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
     for name, d in out.items():
+        if name == "layouts":
+            for lname, lay in d.items():
+                kb = (DST / lay["image"]).stat().st_size // 1024
+                print(f"{lname:12} {lay['image']:20} backdrop  {kb} KB")
+            continue
         kb = (DST / d["file"]).stat().st_size // 1024
         print(f"{name:12} {d['file']:20} {d['frames']:3} fr  {kb} KB")
 

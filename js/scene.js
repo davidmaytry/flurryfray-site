@@ -53,6 +53,23 @@
   };
   var L = LAYOUTS.wide;
 
+  // SS-497: game-snow backdrops (tools/site_sprites.gd in the game repo). Each
+  // layout brings its picture, where it lies in world units ("rect", wider
+  // than the world so it always covers the stage), and each kid's feet and
+  // sprite scale. Kids nearer the camera are drawn a little bigger.
+  function useLayouts(meta) {
+    if (!meta || !meta.layouts) return;
+    ["wide", "tall"].forEach(function (k) {
+      var m = meta.layouts[k];
+      if (!m) return;
+      var d = LAYOUTS[k];
+      d.W = m.W; d.H = m.H;
+      d.thrower = { x: m.thrower.x, y: m.thrower.y, scale: m.thrower.scale };
+      d.target = { x: m.target.x, y: m.target.y, scale: m.target.scale };
+      d.backdrop = { src: BASE + m.image, rect: m.rect };
+    });
+  }
+
   // ---------- small helpers ----------
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function seg(p, a, b) { return clamp((p - a) / (b - a), 0, 1); }
@@ -131,6 +148,7 @@
             im.src = BASE + file;
           }));
         });
+        useLayouts(meta);
         return Promise.all(waits).then(function () {
           // The kids must both be there; the ball and splash may fall back to shapes.
           return out.thrower && out.hit && out.fall ? out : null;
@@ -189,8 +207,10 @@
   }
 
   // Scale and flip a sprite so its feet sit on (0,0) of its actor and it looks the right way.
-  function placeSheet(sh, wantFacing) {
-    var s = L.charH / (sh.fh * sh.height);
+  // `scale` comes with the backdrop (the kid's size where he stands); without one,
+  // the kid is charH tall.
+  function placeSheet(sh, wantFacing, scale) {
+    var s = scale || L.charH / (sh.fh * sh.height);
     var flip = sh.facing && sh.facing !== wantFacing ? -1 : 1;
     var ax = sh.anchor[0] * sh.fw, ay = sh.anchor[1] * sh.fh;
     sh.box.style.transform = "scale(" + (s * flip) + "," + s + ") translate(" + (-ax) + "px," + (-ay) + "px)";
@@ -210,6 +230,22 @@
   function buildGround() {
     ground.forEach(function (g) { g.remove(); });
     ground = [];
+    if (L.backdrop) {
+      // A frame of the game itself: snow, drifts, forest and the dusk sky.
+      var bd = el("backdrop");
+      var r = L.backdrop.rect;
+      var im = new Image();
+      im.alt = "";
+      im.decoding = "async";
+      im.src = L.backdrop.src;
+      bd.style.width = r[2] + "px";
+      bd.style.height = r[3] + "px";
+      bd.style.transform = "translate(" + r[0] + "px," + r[1] + "px)";
+      bd.appendChild(im);
+      ground.push(bd);
+      world.insertBefore(bd, world.firstChild);
+      return;
+    }
     var base = el("snow-base");
     base.style.transform = "translate(-2000px," + L.base + "px)";
     ground.push(base);
@@ -238,15 +274,24 @@
     L = next;
     var s = Math.min(w / L.W, (h * 0.92) / L.H);
     var ox = (w - L.W * s) / 2, oy = h - L.H * s - h * 0.02;
+    if (L.backdrop) {
+      // The backdrop must cover the stage edge to edge: no strip of the CSS
+      // sky above it. Nudge the world (it only ever needs a few px).
+      var r = L.backdrop.rect;
+      var top = oy + r[1] * s, bottom = oy + (r[1] + r[3]) * s;
+      if (top > 0) oy -= top; else if (bottom < h) oy += Math.min(h - bottom, -top);
+      var left = ox + r[0] * s, right = ox + (r[0] + r[2]) * s;
+      if (left > 0) ox -= left; else if (right < w) ox += Math.min(w - right, -left);
+    }
     world.style.width = L.W + "px";
     world.style.height = L.H + "px";
     world.style.transform = "translate(" + ox + "px," + oy + "px) scale(" + s + ")";
     if (changed) buildGround();
     A.thrower.style.transform = "translate(" + L.thrower.x + "px," + L.thrower.y + "px)";
     if (A.sheets) {
-      placeSheet(A.sheets.thrower, "right");
-      placeSheet(A.sheets.hit, "left");
-      placeSheet(A.sheets.fall, "left");
+      placeSheet(A.sheets.thrower, "right", L.thrower.scale);
+      placeSheet(A.sheets.hit, "left", L.target.scale);
+      placeSheet(A.sheets.fall, "left", L.target.scale);
       hand = framePoint(A.sheets.thrower, A.sheets.thrower.hand, L.thrower.x, L.thrower.y);
       face = framePoint(A.sheets.hit, A.sheets.hit.face, L.target.x, L.target.y);
     } else {
@@ -257,17 +302,25 @@
     }
     // Ball and splash: their centre on the point; same pixel scale as the kids
     // when the sprites were rendered together, otherwise a fixed size.
+    // The ball is drawn at the thrower's scale in the box; on the way it grows
+    // to the target's (draw), since the target stands nearer the camera.
     var heroS = A.sheets ? A.sheets.thrower.scale : 1;
-    [["ball", 70], ["splash", 340]].forEach(function (kv) {
+    var targetS = A.sheets ? A.sheets.hit.scale : 1;
+    A.ballGrow = targetS / heroS;
+    [["ball", 70, heroS], ["splash", 340, targetS]].forEach(function (kv) {
       var sh = A.sheets && A.sheets[kv[0]];
       if (!sh) return;
-      var k = sh.withHeroes ? heroS : kv[1] / Math.max(sh.fw, sh.fh);
+      var k = sh.withHeroes ? kv[2] : kv[1] / Math.max(sh.fw, sh.fh);
       sh.box.style.transform = "scale(" + k + ") translate(" + (-sh.centre[0] * sh.fw) + "px," + (-sh.centre[1] * sh.fh) + "px)";
     });
     if (A.shadows) {
       var sd = A.sheets.shadow;
-      A.shadowBase = "scale(" + heroS + ") translate(" + (-sd.centre[0] * sd.fw) + "px," + (-sd.centre[1] * sd.fh) + "px)";
-      A.shadows.forEach(function (b) { b.style.transform = A.shadowBase; });
+      var shadowAt = function (k) {
+        return "scale(" + k + ") translate(" + (-sd.centre[0] * sd.fw) + "px," + (-sd.centre[1] * sd.fh) + "px)";
+      };
+      A.shadowBase = shadowAt(targetS);
+      A.shadows[0].style.transform = shadowAt(heroS);
+      A.shadows[1].style.transform = A.shadowBase;
     }
     drawn = -1;
   }
@@ -302,9 +355,18 @@
       var x = (1 - t) * (1 - t) * hand.x + 2 * (1 - t) * t * cx + t * t * face.x;
       var y = (1 - t) * (1 - t) * hand.y + 2 * (1 - t) * t * cy + t * t * face.y;
       // Leaves the hand at the size it was held at, grows to flight size.
-      var held = A.sheets && A.sheets.ball ? A.sheets.ball.held : 1;
+      var bs = A.sheets && A.sheets.ball;
+      var held = bs ? bs.held : 1;
       var k = held + (1 - held) * ease(seg(t, 0, 0.35));
-      A.ball.style.transform = "translate(" + x + "px," + y + "px) rotate(" + (t * 540) + "deg) scale(" + k + ")";
+      if (bs && bs.n > 1) {
+        // The lump tumbles by its own frames (the light is baked into them,
+        // so the picture is not rotated); grows a little as it comes nearer.
+        bs.frame((t * 2.5) % 1);
+        k *= 1 + ((A.ballGrow || 1) - 1) * t;
+        A.ball.style.transform = "translate(" + x + "px," + y + "px) scale(" + k + ")";
+      } else {
+        A.ball.style.transform = "translate(" + x + "px," + y + "px) rotate(" + (t * 540) + "deg) scale(" + k + ")";
+      }
       A.ball.style.visibility = "visible";
     } else {
       A.ball.style.visibility = "hidden";
