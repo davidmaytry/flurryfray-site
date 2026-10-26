@@ -2,18 +2,18 @@
   "thrower": {
     "file": "thrower.webp",
     "frames": 20,
-    "cols": 20,
-    "fw": 384,
-    "fh": 512,
+    "cols": 10,
+    "fw": 768,
+    "fh": 1024,
     "anchor": [
-      0.5651,
+      0.5638,
       0.875
     ],
     "facing": "right",
-    "height": 0.81641,
+    "height": 0.81738,
     "hand": [
-      0.50182,
-      0.58437
+      0.50065,
+      0.58447
     ],
     "release": 12
   },
@@ -21,39 +21,39 @@
     "file": "target_hit.webp",
     "frames": 14,
     "cols": 14,
-    "fw": 268,
-    "fh": 512,
+    "fw": 536,
+    "fh": 1024,
     "anchor": [
-      0.42537,
+      0.42351,
       0.875
     ],
     "facing": "left",
-    "height": 0.81641,
+    "height": 0.81738,
     "face": [
-      0.14739,
-      0.40117
+      0.14534,
+      0.40127
     ],
     "contact": 0
   },
   "target_fall": {
     "file": "target_fall.webp",
-    "frames": 18,
-    "cols": 18,
-    "fw": 456,
-    "fh": 512,
+    "frames": 36,
+    "cols": 9,
+    "fw": 910,
+    "fh": 1024,
     "anchor": [
-      0.24342,
+      0.24396,
       0.875
     ],
     "facing": "left",
-    "height": 0.81641
+    "height": 0.81738
   },
   "snowball": {
     "file": "snowball.webp",
     "frames": 6,
     "cols": 6,
-    "fw": 124,
-    "fh": 124,
+    "fw": 238,
+    "fh": 238,
     "anchor": [
       0.5,
       0.5
@@ -65,8 +65,8 @@
     "file": "splash.webp",
     "frames": 8,
     "cols": 8,
-    "fw": 320,
-    "fh": 320,
+    "fw": 640,
+    "fh": 640,
     "anchor": [
       0.5,
       0.5
@@ -77,8 +77,8 @@
     "file": "shadow.webp",
     "frames": 1,
     "cols": 1,
-    "fw": 260,
-    "fh": 80,
+    "fw": 520,
+    "fh": 160,
     "anchor": [
       0.5,
       0.5
@@ -97,14 +97,14 @@
       "W": 1600,
       "H": 900,
       "thrower": {
-        "x": 395.4,
-        "y": 705.5,
-        "scale": 0.8632
+        "x": 395.5,
+        "y": 705.7,
+        "scale": 0.4316
       },
       "target": {
         "x": 1126.5,
-        "y": 804.5,
-        "scale": 0.933
+        "y": 804.3,
+        "scale": 0.4665
       }
     },
     "tall": {
@@ -119,13 +119,13 @@
       "H": 1300,
       "thrower": {
         "x": 291.1,
-        "y": 551.7,
-        "scale": 0.7296
+        "y": 551.9,
+        "scale": 0.3648
       },
       "target": {
         "x": 414.4,
-        "y": 1127.2,
-        "scale": 0.9228
+        "y": 1126.9,
+        "scale": 0.4614
       }
     }
   }

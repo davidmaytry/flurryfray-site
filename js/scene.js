@@ -5,8 +5,12 @@
 // tall .scene section drives it forwards and backwards:
 //   0    – 0.35  thrower plays the throw
 //   0.35 – 0.6   the ball flies
-//   0.6  – 0.7   hit: target_hit frames + splash
-//   0.7  – 1     target_fall frames
+//   0.6  – 0.615 hit: only the first target_hit frames (the head snaps back)
+//   0.615 – 0.95 target_fall frames, starting at the one that matches the
+//                hit pose, so the hit runs straight into the fall (SS-499:
+//                "лаг между тем как попал снежок и как персонаж упал");
+//                the splash plays over the start of the fall
+//   0.95 – 1     he lies
 // Only requestAnimationFrame and transforms; no libraries.
 //
 // Sprites come from img/scene/meta.json (copied in by tools/import_sprites.py).
@@ -35,7 +39,16 @@
   var hint = root.querySelector(".scene__hint");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var BASE = "img/scene/";
-  var HIT_POSE = 0.66; // the still frame for reduced motion
+  var HIT_POSE = 0.62; // the still frame for reduced motion
+  // Hit into fall without a pause (SS-499). The whole target_hit clip is the
+  // head snapping back and the kid standing up straight again; played to the
+  // end, it read as a pause before the fall, and target_fall then began
+  // standing still for its first frames. Measured on the frames (mean pixel
+  // difference, feet aligned): fall frames 0..2 (of 36) are plain stance, and
+  // hit frame 2 is closest to fall frame 5, so the hit plays 1..2 (frame 0 is
+  // the stance before contact) and the fall picks up at 5.
+  var CONTACT = 0.6, HIT_END = 0.615, FALL_END = 0.95;
+  var HIT_FIRST = 1, HIT_LAST = 2, FALL_FROM = 5;
 
   // Two stage shapes: wide screens throw sideways, phones throw down a slope,
   // so the kids stay big and are never cut off.
@@ -330,7 +343,8 @@
   function draw(p) {
     if (Math.abs(p - drawn) < 0.0005) return;
     drawn = p;
-    var throwT = seg(p, 0, 0.35), flyT = seg(p, 0.35, 0.6), hitT = seg(p, 0.6, 0.7), fallT = seg(p, 0.7, 1);
+    var throwT = seg(p, 0, 0.35), flyT = seg(p, 0.35, CONTACT), hitT = seg(p, CONTACT, HIT_END),
+      fallT = seg(p, HIT_END, FALL_END);
     var S = A.sheets;
 
     // Thrower.
@@ -349,7 +363,7 @@
     }
 
     // Ball: quadratic arc from the hand to the face.
-    if (p >= 0.35 && p < 0.6) {
+    if (p >= 0.35 && p < CONTACT) {
       var t = flyT;
       var cx = (hand.x + face.x) / 2, cy = Math.min(hand.y, face.y) - L.lift;
       var x = (1 - t) * (1 - t) * hand.x + 2 * (1 - t) * t * cx + t * t * face.x;
@@ -373,7 +387,7 @@
     }
 
     // Splash at the face.
-    var splashT = seg(p, 0.6, 0.76);
+    var splashT = seg(p, CONTACT, 0.76);
     if (splashT > 0 && splashT < 1) {
       A.splash.style.visibility = "visible";
       A.splash.style.transform = "translate(" + face.x + "px," + face.y + "px)";
@@ -394,11 +408,15 @@
 
     // Target.
     if (S) {
-      var falling = p >= 0.7;
+      var falling = p >= HIT_END;
       S.hit.box.style.visibility = falling ? "hidden" : "visible";
       S.fall.box.style.visibility = falling ? "visible" : "hidden";
-      S.hit.frame(p < 0.6 ? 0 : hitT);
-      S.fall.frame(fallT);
+      var hi = p < CONTACT ? 0
+        : Math.min(HIT_LAST, HIT_FIRST + Math.floor(hitT * (HIT_LAST - HIT_FIRST + 1)));
+      S.hit.frame((hi + 0.5) / S.hit.n);
+      var from = Math.min(FALL_FROM, S.fall.n - 1);
+      var fj = Math.min(S.fall.n - 1, from + Math.floor(fallT * (S.fall.n - from)));
+      S.fall.frame((fj + 0.5) / S.fall.n);
       A.target.style.transform = "translate(" + L.target.x + "px," + L.target.y + "px)";
       if (A.shadows) {
         // The shadow follows the body as it lies down towards the right.
@@ -407,9 +425,9 @@
       }
     } else {
       // Head snaps back on the hit, then the whole kid tips over backwards.
-      var headRot = p < 0.6 ? 0 : 28 * Math.sin(hitT * Math.PI * 0.5);
+      var headRot = p < CONTACT ? 0 : 28 * Math.sin(hitT * Math.PI * 0.5);
       A.targetHead.style.transform = "translate(-75px,-330px) rotate(" + headRot + "deg)";
-      var lean = p < 0.6 ? 0 : 6 * Math.sin(hitT * Math.PI);
+      var lean = p < CONTACT ? 0 : 6 * Math.sin(hitT * Math.PI);
       var fall = 84 * ease(fallT);
       var slide = 20 * ease(fallT);
       A.target.style.transform = "translate(" + (L.target.x + slide) + "px," + L.target.y + "px) rotate(" + (lean + fall) + "deg)";

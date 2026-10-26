@@ -209,8 +209,10 @@ strong { font-weight: 900; }
 .ph-ball--hand { transform: translate(-8px, -30px); }
 .ph-bit { width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .8); }
 .ball, .splash { visibility: hidden; }
-/* white spray on light snow: a soft blue-violet rim so it reads */
-.splash img { filter: drop-shadow(0 0 3px rgba(60, 70, 150, .55)) drop-shadow(0 2px 2px rgba(40, 40, 110, .35)); }
+/* SS-499: the spray carries its own lilac underside now; the old blue rim
+   (made for the white CSS snow) turned clumps into bubbles. Sprites are
+   rendered at 600 px/m and drawn smaller: smooth scaling, not pixelated. */
+.sprite img, .backdrop img { image-rendering: auto; }
 
 /* ---------- feature cards ---------- */
 .features { padding: 40px 0 70px; }
