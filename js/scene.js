@@ -47,7 +47,7 @@
     },
     tall: {
       W: 800, H: 1300, charH: 400,
-      thrower: { x: 175, y: 600 }, target: { x: 395, y: 1160 },
+      thrower: { x: 225, y: 600 }, target: { x: 450, y: 1160 },
       mounds: [{ cx: 60, cy: 1180, rx: 470, ry: 580 }], base: 1150, lift: 170,
     },
   };
@@ -80,6 +80,10 @@
     this.face = pick(def, ["face"], [0.45, 0.3]);
     this.facing = pick(def, ["facing"], null);
     this.height = pick(def, ["height"], 0.9);
+    this.centre = pick(def, ["anchor"], [0.5, 0.5]);
+    this.release = pick(def, ["release", "release_frame"], null);
+    this.withHeroes = !!pick(def, ["scale_with_heroes"], false);
+    this.held = pick(def, ["held_scale"], 1);
     this.box = null;
   }
   // A clipped box of one frame; the whole sheet moves inside it by transform.
@@ -112,7 +116,7 @@
       .then(function (meta) {
         var names = {
           thrower: ["thrower"], hit: ["target_hit"], fall: ["target_fall"],
-          ball: ["snowball", "ball"], splash: ["splash", "splat", "burst"],
+          ball: ["snowball", "ball"], splash: ["splash", "splat", "burst"], shadow: ["shadow"],
         };
         var out = {}, waits = [];
         Object.keys(names).forEach(function (k) {
@@ -157,6 +161,19 @@
     A.target = el("actor");
     S.hit.mount(A.target);
     S.fall.mount(A.target);
+    if (S.shadow) {
+      // A shadow under each kid's feet, drawn before (under) the kid.
+      A.shadows = [A.thrower, A.target].map(function (a) {
+        var box = el("sprite", a);
+        var im = S.shadow.img.cloneNode();
+        im.alt = "";
+        box.style.width = S.shadow.fw + "px";
+        box.style.height = S.shadow.fh + "px";
+        box.appendChild(im);
+        a.insertBefore(box, a.firstChild);
+        return box;
+      });
+    }
   }
 
   function buildCommon(S) {
@@ -203,7 +220,7 @@
       d.style.transform = "translate(" + (m.cx - m.rx) + "px," + (m.cy - m.ry) + "px)";
       ground.push(d);
     });
-    ["thrower", "target"].forEach(function (k) {
+    if (!A.shadows) ["thrower", "target"].forEach(function (k) {
       var s = el("shadow");
       s.style.transform = "translate(" + (L[k].x - 110) + "px," + (L[k].y - 22) + "px)";
       ground.push(s);
@@ -238,15 +255,19 @@
       hand = { x: L.thrower.x + 142, y: L.thrower.y - 235 };
       face = { x: L.target.x - 50, y: L.target.y - 215 };
     }
-    if (A.sheets && A.sheets.ball) {
-      var b = A.sheets.ball;
-      var bs = 70 / Math.max(b.fw, b.fh);
-      b.box.style.transform = "scale(" + bs + ") translate(" + (-b.fw / 2) + "px," + (-b.fh / 2) + "px)";
-    }
-    if (A.sheets && A.sheets.splash) {
-      var sp = A.sheets.splash;
-      var ss = 340 / Math.max(sp.fw, sp.fh);
-      sp.box.style.transform = "scale(" + ss + ") translate(" + (-sp.fw / 2) + "px," + (-sp.fh / 2) + "px)";
+    // Ball and splash: their centre on the point; same pixel scale as the kids
+    // when the sprites were rendered together, otherwise a fixed size.
+    var heroS = A.sheets ? A.sheets.thrower.scale : 1;
+    [["ball", 70], ["splash", 340]].forEach(function (kv) {
+      var sh = A.sheets && A.sheets[kv[0]];
+      if (!sh) return;
+      var k = sh.withHeroes ? heroS : kv[1] / Math.max(sh.fw, sh.fh);
+      sh.box.style.transform = "scale(" + k + ") translate(" + (-sh.centre[0] * sh.fw) + "px," + (-sh.centre[1] * sh.fh) + "px)";
+    });
+    if (A.shadows) {
+      var sd = A.sheets.shadow;
+      A.shadowBase = "scale(" + heroS + ") translate(" + (-sd.centre[0] * sd.fw) + "px," + (-sd.centre[1] * sd.fh) + "px)";
+      A.shadows.forEach(function (b) { b.style.transform = A.shadowBase; });
     }
     drawn = -1;
   }
@@ -261,7 +282,11 @@
 
     // Thrower.
     if (S) {
-      S.thrower.frame(throwT);
+      // Frames up to the release fill 0..0.35, so the release frame shows
+      // exactly when the ball leaves the hand; the follow-through plays early in the flight.
+      var th = S.thrower, rel = th.release != null ? th.release : Math.round(th.n * 0.6);
+      var fi = p < 0.35 ? Math.floor(throwT * rel) : rel + Math.floor(seg(p, 0.35, 0.47) * (th.n - rel));
+      th.frame((Math.min(fi, th.n - 1) + 0.5) / th.n);
     } else {
       // Wind back, then whip forward; the ball leaves at the end.
       var ang = throwT < 0.6 ? -150 * ease(throwT / 0.6) : -150 + 210 * ease((throwT - 0.6) / 0.4);
@@ -276,7 +301,10 @@
       var cx = (hand.x + face.x) / 2, cy = Math.min(hand.y, face.y) - L.lift;
       var x = (1 - t) * (1 - t) * hand.x + 2 * (1 - t) * t * cx + t * t * face.x;
       var y = (1 - t) * (1 - t) * hand.y + 2 * (1 - t) * t * cy + t * t * face.y;
-      A.ball.style.transform = "translate(" + x + "px," + y + "px) rotate(" + (t * 540) + "deg) scale(" + (0.9 + 0.25 * t) + ")";
+      // Leaves the hand at the size it was held at, grows to flight size.
+      var held = A.sheets && A.sheets.ball ? A.sheets.ball.held : 1;
+      var k = held + (1 - held) * ease(seg(t, 0, 0.35));
+      A.ball.style.transform = "translate(" + x + "px," + y + "px) rotate(" + (t * 540) + "deg) scale(" + k + ")";
       A.ball.style.visibility = "visible";
     } else {
       A.ball.style.visibility = "hidden";
@@ -310,6 +338,11 @@
       S.hit.frame(p < 0.6 ? 0 : hitT);
       S.fall.frame(fallT);
       A.target.style.transform = "translate(" + L.target.x + "px," + L.target.y + "px)";
+      if (A.shadows) {
+        // The shadow follows the body as it lies down towards the right.
+        var st = falling ? ease(fallT) : 0;
+        A.shadows[1].style.transform = "translate(" + (130 * st) + "px,0) scale(" + (1 + 1.1 * st) + ",1) " + A.shadowBase;
+      }
     } else {
       // Head snaps back on the hit, then the whole kid tips over backwards.
       var headRot = p < 0.6 ? 0 : 28 * Math.sin(hitT * Math.PI * 0.5);

@@ -1,0 +1,88 @@
+{
+  "thrower": {
+    "file": "thrower.webp",
+    "frames": 20,
+    "cols": 20,
+    "fw": 384,
+    "fh": 512,
+    "anchor": [
+      0.5651,
+      0.875
+    ],
+    "facing": "right",
+    "height": 0.8125,
+    "hand": [
+      0.50182,
+      0.60723
+    ],
+    "release": 12
+  },
+  "target_hit": {
+    "file": "target_hit.webp",
+    "frames": 14,
+    "cols": 14,
+    "fw": 268,
+    "fh": 512,
+    "anchor": [
+      0.42537,
+      0.875
+    ],
+    "facing": "left",
+    "height": 0.8125,
+    "face": [
+      0.14739,
+      0.41934
+    ],
+    "contact": 0
+  },
+  "target_fall": {
+    "file": "target_fall.webp",
+    "frames": 18,
+    "cols": 18,
+    "fw": 456,
+    "fh": 512,
+    "anchor": [
+      0.24342,
+      0.875
+    ],
+    "facing": "left",
+    "height": 0.8125
+  },
+  "snowball": {
+    "file": "snowball.webp",
+    "frames": 1,
+    "cols": 1,
+    "fw": 112,
+    "fh": 112,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "scale_with_heroes": true,
+    "held_scale": 0.5
+  },
+  "splash": {
+    "file": "splash.webp",
+    "frames": 8,
+    "cols": 8,
+    "fw": 320,
+    "fh": 320,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "scale_with_heroes": true
+  },
+  "shadow": {
+    "file": "shadow.webp",
+    "frames": 1,
+    "cols": 1,
+    "fw": 260,
+    "fh": 80,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "scale_with_heroes": true
+  }
+}
