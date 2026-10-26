@@ -25,7 +25,8 @@
 //   "target_hit":  { ..., "face": [0.45, 0.3], "facing": "left" },
 //   "target_fall": { ... },
 //   "snowball":    { "file": "snowball.webp", "frames": 1, ... },
-//   "splash":      { "file": "splash.webp", "frames": 8, ... }
+//   "splash_wide": { "file": "splash_wide.webp", "frames": 12, "anchor": [..] },
+//   "splash_tall": { ... }   // SS-506: 3D splash, one per layout; anchor = contact
 // }
 // "file" may also be "image"/"src", "frames" may be "count", "cols" may be
 // "columns", "fw"/"fh" may be "frame_w"/"frame_h" or "w"/"h". Anything missing
@@ -146,7 +147,11 @@
       .then(function (meta) {
         var names = {
           thrower: ["thrower"], hit: ["target_hit"], fall: ["target_fall"],
-          ball: ["snowball", "ball"], splash: ["splash", "splat", "burst"], shadow: ["shadow"],
+          ball: ["snowball", "ball"], shadow: ["shadow"],
+          // SS-506: the splash is shot in 3D along the hit, one sheet per
+          // layout (the ball comes in at its own angle on each).
+          splashWide: ["splash_wide", "splash", "splat", "burst"],
+          splashTall: ["splash_tall", "splash_wide", "splash"],
         };
         var out = {}, waits = [];
         Object.keys(names).forEach(function (k) {
@@ -211,8 +216,9 @@
     A.ball = el("ball");
     if (S && S.ball) S.ball.mount(A.ball); else el("ph-ball", A.ball);
     A.splash = el("splash");
-    if (S && S.splash) {
-      S.splash.mount(A.splash);
+    if (S && S.splashWide) {
+      S.splashWide.mount(A.splash);
+      if (S.splashTall) S.splashTall.mount(A.splash);
     } else {
       A.bits = [];
       for (var i = 0; i < 12; i++) A.bits.push(el("ph-bit", A.splash));
@@ -320,6 +326,13 @@
     var heroS = A.sheets ? A.sheets.thrower.scale : 1;
     var targetS = A.sheets ? A.sheets.hit.scale : 1;
     A.ballGrow = targetS / heroS;
+    if (A.sheets && A.sheets.splashWide) {
+      // The splash of this layout: its sheet was shot along this arc's hit.
+      var tallNow = L === LAYOUTS.tall && A.sheets.splashTall;
+      A.sheets.splash = tallNow ? A.sheets.splashTall : A.sheets.splashWide;
+      A.sheets.splashWide.box.style.display = tallNow ? "none" : "";
+      if (A.sheets.splashTall) A.sheets.splashTall.box.style.display = tallNow ? "" : "none";
+    }
     [["ball", 70, heroS], ["splash", 340, targetS]].forEach(function (kv) {
       var sh = A.sheets && A.sheets[kv[0]];
       if (!sh) return;

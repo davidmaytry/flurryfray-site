@@ -9,7 +9,9 @@ js/scene.js reads (see the comment at its top): pixel points become 0..1 of a
 frame, "foot" becomes "anchor", "faces" becomes "facing", and so on. The
 source files are never changed. Without img/scene/meta.json the scene runs on
 placeholder shapes. SS-497: "layouts" brings the game-snow backdrops (wide and
-tall) with each kid's feet and sprite scale in stage world units.
+tall) with each kid's feet and sprite scale in stage world units. SS-506: the
+splash comes as two 3D sheets, splash_wide and splash_tall (the ball comes in
+at each layout's own angle); "centre" is the contact point.
 """
 import json
 import shutil
@@ -22,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("C:/Projects/Web/_sprites_ss496")
 DST = ROOT / "img" / "scene"
 HEROES = ("thrower", "target_hit", "target_fall")
-PROPS = ("snowball", "splash", "shadow")
+PROPS = ("snowball", "splash", "splash_wide", "splash_tall", "shadow")
 
 
 def first(d, *keys, default=None):

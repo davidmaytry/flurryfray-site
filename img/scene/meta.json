@@ -61,15 +61,27 @@
     "scale_with_heroes": true,
     "held_scale": 0.5
   },
-  "splash": {
-    "file": "splash.webp",
-    "frames": 8,
-    "cols": 8,
-    "fw": 640,
-    "fh": 640,
+  "splash_wide": {
+    "file": "splash_wide.webp",
+    "frames": 12,
+    "cols": 7,
+    "fw": 1137,
+    "fh": 1104,
     "anchor": [
-      0.5,
-      0.5
+      0.79156,
+      0.29194
+    ],
+    "scale_with_heroes": true
+  },
+  "splash_tall": {
+    "file": "splash_tall.webp",
+    "frames": 12,
+    "cols": 8,
+    "fw": 1004,
+    "fh": 1146,
+    "anchor": [
+      0.84263,
+      0.31789
     ],
     "scale_with_heroes": true
   },
