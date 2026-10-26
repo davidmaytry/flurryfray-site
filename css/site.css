@@ -157,6 +157,56 @@ strong { font-weight: 900; }
   text-shadow: 0 1px 2px rgba(28, 24, 60, .35);
 }
 
+/* ---------- scroll scene (SS-496, js/scene.js) ----------
+   The section is tall; the stage sticks to the screen while you scroll
+   through it, and scroll progress drives the throw, the hit and the fall. */
+.scene { position: relative; margin: 10px 0 30px; }
+.scene__stage {
+  position: relative; height: 100vh; height: 100svh; overflow: hidden;
+  background:
+    radial-gradient(ellipse 50% 40% at 80% 30%, rgba(255, 196, 140, .55), transparent 70%),
+    linear-gradient(180deg, #5d5a9c 0, #8a82bd 35%, #c9a3c4 62%, #f1c6c0 80%);
+}
+.scene--live { height: 280vh; }
+.scene--live .scene__stage { position: sticky; top: 0; }
+.scene--still .scene__stage { height: min(80vh, 720px); }
+.scene:not(.scene--live):not(.scene--still) .scene__stage { height: 300px; }
+.scene__world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.scene__world div { position: absolute; left: 0; top: 0; }
+.scene__caption {
+  position: absolute; left: 0; right: 0; top: clamp(18px, 5vh, 56px); margin: 0; padding: 0 16px;
+  text-align: center; font-weight: 900; font-size: clamp(26px, 4.4vw, 46px); line-height: 1.1;
+  color: #fff; -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill;
+  text-shadow: 0 4px 0 var(--ink-deep);
+}
+.scene__hint {
+  position: absolute; left: 50%; bottom: 18px; margin: 0; transform: translateX(-50%);
+  font-weight: 800; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-deep);
+  background: rgba(255, 246, 239, .75); padding: 4px 16px; border-radius: 999px;
+}
+.scene--still .scene__hint { display: none; }
+
+.snow-base { width: 6000px; height: 3000px; background: linear-gradient(180deg, #fbeff3 0, #e9d3e3 400px, #d6bfd9 1200px); }
+.snow-mound { border-radius: 50%; background: radial-gradient(ellipse at 45% 20%, #fff8f6 0, #f3e2ec 45%, #dcc4dc 100%); }
+.shadow { width: 220px; height: 44px; border-radius: 50%; background: radial-gradient(closest-side, rgba(70, 50, 110, .35), transparent); }
+.sprite { overflow: hidden; transform-origin: 0 0; }
+.sprite img { display: block; max-width: none; will-change: transform; }
+.actor, .ball, .splash { will-change: transform; }
+
+/* placeholder kids: feet at the actor's (0,0), 400 world units tall */
+.ph-body { width: 150px; height: 200px; transform: translate(-75px, -200px); border-radius: 70px 70px 34px 34px; background: var(--c); }
+.ph-head { width: 150px; height: 150px; transform: translate(-75px, -330px); transform-origin: 75px 150px; }
+.ph-head::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #f6d2bd; }
+.ph-hat { width: 160px; height: 90px; left: -5px !important; top: -20px !important; border-radius: 80px 80px 20px 20px; background: var(--c); }
+.ph-arm { width: 40px; height: 130px; transform: translate(10px, -300px); transform-origin: 20px 130px; border-radius: 20px; background: var(--c); }
+.actor--red { --c: #d8383a; }
+.actor--blue { --c: #3d6fd1; }
+.actor--blue .ph-arm { display: none; }
+.ph-ball { width: 56px; height: 56px; transform: translate(-28px, -28px); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #e8e4f4 60%, #b9b3d6); box-shadow: 0 4px 10px rgba(40, 30, 80, .25); }
+.ph-ball--hand { transform: translate(-8px, -30px); }
+.ph-bit { width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .8); }
+.ball, .splash { visibility: hidden; }
+
 /* ---------- feature cards ---------- */
 .features { padding: 40px 0 70px; }
 .cards {

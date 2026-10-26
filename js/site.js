@@ -55,14 +55,17 @@
   var floatBtn = document.querySelector(".float-wish");
   var ctaBlock = document.querySelector(".facts .cta");
   if (hero && floatBtn && "IntersectionObserver" in window) {
-    var heroGone = false, ctaSeen = false;
+    var heroGone = false, ctaSeen = false, sceneSeen = false;
     var sync = function () {
-      var on = heroGone && !ctaSeen;
+      // Off in the hero, by the other Wishlist button and over the snowball scene.
+      var on = heroGone && !ctaSeen && !sceneSeen;
       floatBtn.classList.toggle("is-on", on);
       floatBtn.setAttribute("aria-hidden", on ? "false" : "true");
       floatBtn.tabIndex = on ? 0 : -1;
     };
     new IntersectionObserver(function (e) { heroGone = !e[0].isIntersecting; sync(); }).observe(hero);
+    var scene = document.querySelector("[data-scene]");
+    if (scene) new IntersectionObserver(function (e) { sceneSeen = e[0].isIntersecting; sync(); }).observe(scene);
     if (ctaBlock) new IntersectionObserver(function (e) { ctaSeen = e[0].isIntersecting; sync(); }).observe(ctaBlock);
   }
 
