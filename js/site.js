@@ -53,7 +53,7 @@
   // --- floating Wishlist button once the hero is gone -----------------------
   var hero = document.querySelector(".hero");
   var floatBtn = document.querySelector(".float-wish");
-  var ctaBlock = document.querySelector(".facts .cta");
+  var ctaBlock = document.querySelector(".gallery-cta");
   var jumpbar = document.querySelector(".jumpbar");
   if (hero && floatBtn && "IntersectionObserver" in window) {
     var heroGone = false, ctaSeen = false, sceneSeen = false;

@@ -5,7 +5,8 @@
   --ink-deep: #1c2a4a;
   --snow: #fff6ef;         /* warm snow, logo rim */
   --blush: #efd0d6;
-  --lilac: #bca8c5;
+  --lilac: #bca8c5;        /* only the snowball scene (a frame of the game) stays lilac */
+  --frost: #c9def3;        /* placeholder behind clips and screenshots */
   --periwinkle: #838abf;   /* hero sky */
   --rose: #e8a9b0;
   --peach: #fbdabf;
@@ -17,7 +18,11 @@
 
   --radius: 28px;
   --radius-sm: 18px;
-  --shadow: 0 14px 34px rgba(28, 24, 60, .28);
+  --shadow: 0 14px 34px rgba(8, 28, 78, .30);
+  /* SS-524: one gap between all blocks, the hero-to-first-heading gap.
+     Measured from the top of a snow cap where a block has one
+     (js/snowcap.js puts the cap's height in --cap-rise). */
+  --block-gap: 40px;
   --font: "Nunito", "Flurry Sans", ui-rounded, "Segoe UI", system-ui, sans-serif;
   color-scheme: light;
 }
@@ -33,8 +38,12 @@ body {
   font-size: 18px;
   line-height: 1.55;
   color: var(--snow);
-  /* Sunset at the top, night by the footer: the page gets darker as you scroll. */
-  background: linear-gradient(180deg, #8a82bd 0, #8a82bd 900px, #6c63a0 1700px, var(--dusk) 2500px, var(--night) 100%) var(--night);
+  /* SS-524: the game's ice (main menu button): light at the top, deep blue by the footer. */
+  background:
+    url(../img/ui/ice-light.webp) 0 0 / 640px auto,
+    linear-gradient(180deg, #9fd2fb 0, #74b8f0 900px, #4f97df 1700px, #2f72c2 2500px, #17428a 100%);
+  background-blend-mode: soft-light, normal;
+  background-color: #17428a;
   overflow-x: hidden;
 }
 img, video { display: block; max-width: 100%; height: auto; }
@@ -45,7 +54,7 @@ strong { font-weight: 900; }
 
 /* Headings: white with a thick navy rim, like the logo. */
 .title, .press h2 {
-  margin: 0 0 28px;
+  margin: 0 0 var(--block-gap);
   font-weight: 900;
   font-size: clamp(28px, 5.4vw, 52px);
   line-height: 1.08;
@@ -98,6 +107,7 @@ strong { font-weight: 900; }
 .btn__text { display: flex; flex-direction: column; gap: 2px; }
 .btn__title { font-weight: 900; }
 .btn--ice .btn__sub { font-weight: 800; font-size: 15px; color: #e3f0ff; -webkit-text-stroke-width: 4px; }
+.hero .btn--big { margin-top: var(--cap-rise, 0px); }
 .btn--big { min-height: 72px; font-size: 24px; padding: 16px 30px 11px 22px; }
 .btn--big .btn__icon { width: 30px; height: 30px; }
 /* the game's glass button (menu: CUSTOMIZE, SETTINGS): slate frosted glass */
@@ -152,12 +162,12 @@ strong { font-weight: 900; }
   overflow: hidden;
   isolation: isolate;
   background:
-    linear-gradient(180deg, rgba(58, 62, 128, .55) 0, rgba(58, 62, 128, 0) 75%),
-    linear-gradient(90deg, #6f7cb6 0, #6a7bbf 20%, #8380c2 40%, #a391c7 60%, #c8a2be 80%, #a791c0 100%);
+    linear-gradient(180deg, rgba(40, 110, 200, .35) 0, rgba(40, 110, 200, 0) 75%),
+    linear-gradient(90deg, #7fbcef 0, #8cc6f3 30%, #a6d4f6 60%, #b9ddf7 100%);
 }
 .hero::after {            /* melt into the page colour */
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; z-index: 1;
-  background: linear-gradient(180deg, rgba(138, 130, 189, 0), #8a82bd);
+  background: linear-gradient(180deg, rgba(159, 210, 251, 0), #9fd2fb);
   pointer-events: none;
 }
 .snow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
@@ -193,26 +203,27 @@ strong { font-weight: 900; }
 }
 
 /* ---------- intro loop ---------- */
-.intro { padding: 40px 0 70px; }
+.intro, .features, .gallery, .press { margin-top: var(--block-gap); }
 .loop {
   position: relative;
-  margin: 0 auto;
+  /* collapses with the heading's own --block-gap, so the gap ends at the top of the cap */
+  margin: calc(var(--block-gap) + var(--cap-rise, 0px)) auto 0;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  background: var(--lilac);
+  background: var(--frost);
 }
 .loop--big { max-width: 1060px; aspect-ratio: 1170 / 476; }
 .loop video { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .lead {
-  max-width: 760px; margin: 32px auto 0;
+  max-width: 760px; margin: var(--block-gap) auto 0;
   font-size: 20px; text-align: center; color: #fff;
-  text-shadow: 0 1px 2px rgba(28, 24, 60, .35);
+  text-shadow: 0 1px 2px rgba(10, 30, 80, .6), 0 0 14px rgba(10, 40, 100, .35);
 }
 
 /* ---------- scroll scene (SS-496, js/scene.js) ----------
    The section is tall; the stage sticks to the screen while you scroll
    through it, and scroll progress drives the throw, the hit and the fall. */
-.scene { position: relative; margin: 10px 0 30px; }
+.scene { position: relative; margin: var(--block-gap) 0 0; }
 .scene__stage {
   position: relative; height: 100vh; height: 100svh; overflow: hidden;
   background:
@@ -267,9 +278,8 @@ strong { font-weight: 900; }
 .sprite img, .backdrop img { image-rendering: auto; }
 
 /* ---------- feature cards ---------- */
-.features { padding: 40px 0 70px; }
 .cards {
-  display: grid; gap: 28px;
+  display: grid; gap: calc(var(--block-gap) + var(--cap-rise, 0px)) 28px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
 }
 .card {
@@ -279,26 +289,26 @@ strong { font-weight: 900; }
   border-radius: var(--radius);
   box-shadow: var(--shadow), inset 0 -5px 0 var(--blush);
 }
-.card__media { aspect-ratio: 1170 / 488; background: var(--lilac); border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; }
+.card__media { aspect-ratio: 1170 / 488; background: var(--frost); border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; }
 .card__media video { width: 100%; height: 100%; object-fit: cover; }
 .card__body { padding: 20px 24px 26px; }
 .card h3 { margin: 0 0 6px; font-weight: 900; font-size: 24px; line-height: 1.15; color: var(--ink); }
 .card p { margin: 0; font-size: 17px; line-height: 1.5; }
 
 /* ---------- gallery ---------- */
-.gallery { padding: 40px 0 70px; }
 .shots {
   list-style: none; margin: 0; padding: 0;
-  display: grid; gap: 18px;
+  display: grid; gap: calc(18px + var(--cap-rise, 0px)) 18px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
 }
 .shots a {
   position: relative;
   display: block; border-radius: var(--radius-sm);
   box-shadow: 0 10px 24px rgba(20, 16, 50, .3);
-  aspect-ratio: 16 / 9; background: var(--lilac);
+  aspect-ratio: 16 / 9; background: var(--frost);
   transition: transform .18s ease;
 }
+[data-cap-host] { padding-top: var(--cap-rise, 0px); }
 .shots a:hover { transform: translateY(-3px) rotate(-.4deg); }
 .shots img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 @media (prefers-reduced-motion: reduce) { .shots a { transition: none; } .shots a:hover { transform: none; } }
@@ -324,44 +334,50 @@ strong { font-weight: 900; }
 .lightbox__prev { left: 16px; top: 50%; transform: translateY(-50%); }
 .lightbox__next { right: 16px; top: 50%; transform: translateY(-50%); }
 
-/* ---------- facts ---------- */
-.facts { padding: 40px 0 70px; }
-.factlist {
-  margin: 0; display: grid; gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-}
-.fact {
-  background: var(--snow); color: var(--ink-deep);
-  border-radius: var(--radius-sm); padding: 18px 20px 20px; text-align: center;
-  box-shadow: var(--shadow), inset 0 -4px 0 var(--blush);
-}
-.fact dt { font-weight: 800; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--dusk); }
-.fact dd { margin: 4px 0 0; font-weight: 900; font-size: 24px; line-height: 1.2; color: var(--ink); }
-.cta { margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+/* ---------- Wishlist under the gallery ---------- */
+.gallery-cta { margin-top: var(--block-gap); display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.gallery-cta .btn { margin-top: var(--cap-rise, 0px); }
 .steam-widget { width: 100%; max-width: 646px; border-radius: 12px; overflow: hidden; }
 .steam-widget iframe { display: block; width: 100%; height: 190px; border: 0; }
 
-/* ---------- press kit ---------- */
-.press { padding: 40px 0 80px; }
-.plate {
-  background: var(--snow); color: var(--ink-deep);
-  border-radius: var(--radius); box-shadow: var(--shadow), inset 0 -6px 0 var(--blush);
-}
+/* ---------- press kit (SS-524) ----------
+   The capsule's girl making a snow angel, without the logo (left part of
+   header_capsule_920x430): she stays sharp, the snow round her is softly
+   blurred, and it runs on into blurred snow under a blue shade where the
+   text sits. */
 .press__plate {
-  display: grid; gap: 28px 40px; align-items: center;
-  grid-template-columns: minmax(0, 360px) 1fr;
-  padding: 36px 40px 40px;
+  position: relative; overflow: hidden; isolation: isolate;
+  display: grid; align-items: center;
+  grid-template-columns: minmax(0, 42%) 1fr;
+  min-height: 430px;
+  border-radius: var(--radius);
+  background: url(../img/press-snow.webp) center / cover, var(--frost);
+  box-shadow: var(--shadow);
 }
-.press__capsule { width: 100%; height: auto; border-radius: var(--radius-sm); box-shadow: 0 10px 24px rgba(28, 24, 60, .25); }
+.press__plate::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(90deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, .30) 34%, rgba(8, 34, 92, .62) 58%, rgba(8, 34, 92, .68) 100%);
+}
+.press__art {
+  position: absolute; left: 0; top: 0; z-index: 1;
+  height: 100%; width: auto; max-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 62%, transparent 100%);
+          mask-image: linear-gradient(90deg, #000 62%, transparent 100%);
+}
+.press__text {
+  grid-column: 2; position: relative; z-index: 2;
+  padding: 40px 44px 40px 12px;
+  color: #fff; text-shadow: 0 1px 2px rgba(6, 20, 56, .7);
+}
 .press h2 { text-align: left; font-size: clamp(30px, 4vw, 44px); margin-bottom: 14px; }
 .press p { margin: 0 0 14px; font-size: 17px; }
-.press__meta { font-weight: 800; color: var(--dusk); }
-.press .btn { margin: 8px 0 12px; }
-.press__contents { font-size: 15px !important; color: var(--dusk); }
-.press__contact a { font-weight: 900; color: var(--ink); text-underline-offset: 3px; }
+.press__meta { font-weight: 800; color: #d9e8ff; }
+.press .btn { margin: 8px 0 12px; text-shadow: none; }
+.press__contents { font-size: 15px !important; color: #cfe1fb; }
+.press__contact a { font-weight: 900; color: #fff; text-underline-offset: 3px; }
 
 /* ---------- footer ---------- */
-.footer { padding: 34px 0 110px; background: rgba(12, 10, 28, .35); font-size: 16px; }
+.footer { margin-top: var(--block-gap); padding: 34px 0 110px; background: rgba(6, 20, 60, .35); font-size: 16px; }
 .footer__inner { display: flex; flex-wrap: wrap; gap: 6px 28px; align-items: baseline; justify-content: center; text-align: center; }
 .footer p { margin: 0; }
 .footer a { font-weight: 800; text-underline-offset: 3px; }
@@ -391,38 +407,9 @@ strong { font-weight: 900; }
    clip (not hidden) keeps main from becoming a scroller, so the sticky scene still works */
 main { overflow-x: clip; }
 
-/* ---------- background preview (SS-523): ?theme=ice, ?theme=glass ---------- */
-.theme-ice body {
-  background:
-    url(../img/ui/ice-light.webp) 0 0 / 640px auto,
-    linear-gradient(180deg, #9fd2fb 0, #74b8f0 900px, #4f97df 1700px, #2f72c2 2500px, #17428a 100%);
-  background-blend-mode: soft-light, normal;
-  background-color: #17428a;
-}
-.theme-ice .hero {
-  background:
-    linear-gradient(180deg, rgba(40, 110, 200, .35) 0, rgba(40, 110, 200, 0) 75%),
-    linear-gradient(90deg, #7fbcef 0, #8cc6f3 30%, #a6d4f6 60%, #b9ddf7 100%);
-}
-.theme-ice .hero::after { background: linear-gradient(180deg, rgba(159, 210, 251, 0), #9fd2fb); }
-.theme-ice .lead, .theme-glass .lead { text-shadow: 0 1px 2px rgba(10, 30, 80, .6), 0 0 14px rgba(10, 40, 100, .35); }
-.theme-ice .footer { background: rgba(6, 20, 60, .35); }
-.theme-glass body {
-  background:
-    url(../img/ui/frost.webp) 0 0 / 512px auto,
-    linear-gradient(180deg, #6f87a3 0, #5a7390 900px, #445b77 1700px, #2f4158 2500px, #18222f 100%);
-  background-blend-mode: soft-light, normal;
-  background-color: #18222f;
-}
-.theme-glass .hero {
-  background:
-    linear-gradient(180deg, rgba(40, 56, 84, .45) 0, rgba(40, 56, 84, 0) 75%),
-    linear-gradient(90deg, #7d93b0 0, #8a9fbb 40%, #9aaecb 70%, #8ea2bf 100%);
-}
-.theme-glass .hero::after { background: linear-gradient(180deg, rgba(111, 135, 163, 0), #6f87a3); }
-
 /* ---------- phones ---------- */
 @media (max-width: 699px) {
+  :root { --block-gap: 28px; }
   body { font-size: 17px; }
   .hero__logo { width: min(400px, 86vw); }
   .hero__tagline { font-size: 19px; margin-bottom: 18px; }
@@ -436,16 +423,19 @@ main { overflow-x: clip; }
   .title { -webkit-text-stroke-width: 7px; text-shadow: 0 4px 0 var(--ink-deep); }
   .loop { border-radius: 20px; }
   .lead { font-size: 18px; }
-  .intro, .features, .gallery, .facts { padding: 28px 0 44px; }
   .card__body { padding: 16px 18px 22px; }
   .card h3 { font-size: 22px; }
-  .shots { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .shots { grid-template-columns: 1fr 1fr; gap: calc(10px + var(--cap-rise, 0px)) 10px; }
   .shots a { border-radius: 12px; }
-  .factlist { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .fact:last-child { grid-column: 1 / -1; }
-  .fact dd { font-size: 20px; }
-  .press__plate { grid-template-columns: 1fr; padding: 24px 20px 28px; }
-  .press__capsule { max-width: 400px; margin: 0 auto; }
+  /* the girl on top, the text under her on the shaded snow */
+  .press__plate { grid-template-columns: 1fr; min-height: 0; }
+  .press__plate::before { background: linear-gradient(180deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, 0) 260px, rgba(8, 34, 92, .66) 400px, rgba(8, 34, 92, .72) 100%); }
+  .press__art {
+    position: relative; grid-column: 1; width: 100%; height: auto; max-width: 440px; justify-self: center;
+    -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+            mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+  }
+  .press__text { grid-column: 1; padding: 0 20px 28px; margin-top: -36px; }
   .press h2 { text-align: center; }
   .press .btn { width: 100%; flex-wrap: wrap; font-size: 19px; }
   .float-wish { left: 16px; right: 16px; bottom: 14px; }

@@ -56,7 +56,7 @@
 
   function shape(W, H, r, k, seed) {
     var yEnd = Math.min(H * 0.6, r + 8 * k);
-    var pts = contour(W, H, r, yEnd), out = [], inn = [];
+    var pts = contour(W, H, r, yEnd), out = [], inn = [], top = 0;
     for (var i = 0; i < pts.length; i++) {
       var p = pts[i], s = p.s / k;              // lumps keep their size in game points
       var up = sstep(0.05, 0.8, p.upn), upO = sstep(0.55, 0.98, p.upn);
@@ -64,10 +64,11 @@
       var w = Math.max(up, side), fade = sstep(0, 0.45, w);
       var o = k * (upO * (3.5 + 9 * lump(s, seed)) + up * 1.5) * fade;
       var d = k * (w * (5 + 5 * noise(s / 16 + 9, seed)) + up * 4 * sstep(0.5, 0.95, noise(s / 22 + 5, seed))) * fade;
+      top = Math.min(top, p.y + p.ny * o);
       out.push(f(p.x + p.nx * o) + " " + f(p.y + p.ny * o));
       inn.push(f(p.x - p.nx * d) + " " + f(p.y - p.ny * d));
     }
-    return "M" + out.join("L") + "L" + inn.reverse().join("L") + "Z";
+    return { d: "M" + out.join("L") + "L" + inn.reverse().join("L") + "Z", rise: Math.ceil(-top) };
   }
 
   function el(name, attrs) {
@@ -96,7 +97,18 @@
     g.appendChild(el("stop", { offset: 1, "stop-color": "#d2e5fb" }));
     defs.appendChild(g);
     svg.appendChild(defs);
-    svg.appendChild(el("path", { d: shape(W, H, r, k, box._snowSeed), fill: "url(#" + id + ")" }));
+    var sh = shape(W, H, r, k, box._snowSeed);
+    svg.appendChild(el("path", { d: sh.d, fill: "url(#" + id + ")" }));
+    // SS-524: block gaps are measured from the top of the snow, so tell the
+    // layout how high it rises: on the box, and on a grid that holds it.
+    box._snowRise = sh.rise;
+    box.style.setProperty("--cap-rise", sh.rise + "px");
+    var host = box.parentElement && box.parentElement.closest("[data-cap-host]");
+    if (host) {
+      var most = 0;
+      Array.prototype.forEach.call(host.querySelectorAll("[data-snow]"), function (b) { most = Math.max(most, b._snowRise || 0); });
+      host.style.setProperty("--cap-rise", most + "px");
+    }
   }
 
   var queued = [];
