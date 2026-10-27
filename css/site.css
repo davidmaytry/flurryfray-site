@@ -225,7 +225,10 @@ strong { font-weight: 900; }
    through it, and scroll progress drives the throw, the hit and the fall. */
 .scene { position: relative; margin: var(--block-gap) 0 0; }
 .scene__stage {
-  position: relative; height: 100vh; height: 100svh; overflow: hidden;
+  /* lvh: the stage is as tall as the screen with the browser bar HIDDEN, so no strip of the
+     page shows under it when the bar slides away on a phone (SS-527). The kids are fitted
+     into the small viewport (svh) by js/scene.js, so the bar never covers them. */
+  position: relative; height: 100vh; height: 100lvh; overflow: hidden;
   background:
     radial-gradient(ellipse 50% 40% at 80% 30%, rgba(255, 196, 140, .55), transparent 70%),
     linear-gradient(180deg, #5d5a9c 0, #8a82bd 35%, #c9a3c4 62%, #f1c6c0 80%);
@@ -234,6 +237,7 @@ strong { font-weight: 900; }
 .scene--live .scene__stage { position: sticky; top: 0; }
 .scene--still .scene__stage { height: min(80vh, 720px); }
 .scene:not(.scene--live):not(.scene--still) .scene__stage { height: 300px; }
+.scene__svh { position: absolute; left: 0; top: 0; width: 1px; height: 100vh; height: 100svh; visibility: hidden; pointer-events: none; }
 .scene__world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .scene__world div { position: absolute; left: 0; top: 0; }
 .scene__caption {
@@ -244,6 +248,7 @@ strong { font-weight: 900; }
 }
 .scene__hint {
   position: absolute; left: 50%; bottom: 18px; margin: 0; transform: translateX(-50%);
+  bottom: calc(18px + 100lvh - 100svh);   /* above the browser bar when it is shown (SS-527) */
   font-weight: 800; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-deep);
   background: rgba(255, 246, 239, .75); padding: 4px 16px; border-radius: 999px;
 }

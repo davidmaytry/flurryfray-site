@@ -36,6 +36,10 @@
   var root = document.querySelector("[data-scene]");
   if (!root) return;
   var stage = root.querySelector(".scene__stage");
+  var svhProbe = document.createElement("div");
+  svhProbe.className = "scene__svh";
+  svhProbe.setAttribute("aria-hidden", "true");
+  stage.appendChild(svhProbe);
   var world = root.querySelector(".scene__world");
   var hint = root.querySelector(".scene__hint");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -288,11 +292,15 @@
   var hand, face;
   function layout() {
     var w = stage.clientWidth, h = stage.clientHeight;
-    var next = w / h < 1.05 ? LAYOUTS.tall : LAYOUTS.wide;
+    // Fit the kids into the SMALL viewport (browser bar shown): the stage itself is lvh
+    // tall, so on a phone its bottom can sit under the bar (SS-527). The backdrop below
+    // still covers the whole stage.
+    var v = Math.min(h, svhProbe ? svhProbe.offsetHeight || h : h);
+    var next = w / v < 1.05 ? LAYOUTS.tall : LAYOUTS.wide;
     var changed = next !== L || !ground.length;
     L = next;
-    var s = Math.min(w / L.W, (h * 0.92) / L.H);
-    var ox = (w - L.W * s) / 2, oy = h - L.H * s - h * 0.02;
+    var s = Math.min(w / L.W, (v * 0.92) / L.H);
+    var ox = (w - L.W * s) / 2, oy = v - L.H * s - v * 0.02;
     if (L.backdrop) {
       // The backdrop must cover the stage edge to edge: no strip of the CSS
       // sky above it. Nudge the world (it only ever needs a few px).
