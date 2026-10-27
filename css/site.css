@@ -341,33 +341,27 @@ strong { font-weight: 900; }
 .steam-widget iframe { display: block; width: 100%; height: 190px; border: 0; }
 
 /* ---------- press kit (SS-524) ----------
-   The capsule's girl making a snow angel, without the logo (left part of
-   header_capsule_920x430): she stays sharp, the snow round her is softly
-   blurred, and it runs on into blurred snow under a blue shade where the
-   text sits. */
+   The capsule's girl making a snow angel, without the logo (header_capsule
+   left part, baked by the SS-524 tool into img/press-wide|tall.webp): she
+   is sharp, the snow round her softly blurred, and it runs on into lightly
+   blurred snow; a blue shade, not the blur, keeps the text readable. */
 .press__plate {
   position: relative; overflow: hidden; isolation: isolate;
   display: grid; align-items: center;
-  grid-template-columns: minmax(0, 42%) 1fr;
+  grid-template-columns: minmax(0, 40%) 1fr;
   min-height: 430px;
   border-radius: var(--radius);
-  background: url(../img/press-snow.webp) center / cover, var(--frost);
+  background: #c9c2e0 url(../img/press-wide.webp) left center / cover no-repeat;
   box-shadow: var(--shadow);
 }
 .press__plate::before {
   content: ""; position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(90deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, .30) 34%, rgba(8, 34, 92, .62) 58%, rgba(8, 34, 92, .68) 100%);
-}
-.press__art {
-  position: absolute; left: 0; top: 0; z-index: 1;
-  height: 100%; width: auto; max-width: none;
-  -webkit-mask-image: linear-gradient(90deg, #000 62%, transparent 100%);
-          mask-image: linear-gradient(90deg, #000 62%, transparent 100%);
+  background: linear-gradient(90deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, 0) 24%, rgba(8, 34, 92, .64) 38%, rgba(8, 34, 92, .76) 48%, rgba(8, 34, 92, .80) 100%);
 }
 .press__text {
   grid-column: 2; position: relative; z-index: 2;
   padding: 40px 44px 40px 12px;
-  color: #fff; text-shadow: 0 1px 2px rgba(6, 20, 56, .7);
+  color: #fff; text-shadow: 0 1px 3px rgba(6, 20, 56, .8);
 }
 .press h2 { text-align: left; font-size: clamp(30px, 4vw, 44px); margin-bottom: 14px; }
 .press p { margin: 0 0 14px; font-size: 17px; }
@@ -428,14 +422,12 @@ main { overflow-x: clip; }
   .shots { grid-template-columns: 1fr 1fr; gap: calc(10px + var(--cap-rise, 0px)) 10px; }
   .shots a { border-radius: 12px; }
   /* the girl on top, the text under her on the shaded snow */
-  .press__plate { grid-template-columns: 1fr; min-height: 0; }
-  .press__plate::before { background: linear-gradient(180deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, 0) 260px, rgba(8, 34, 92, .66) 400px, rgba(8, 34, 92, .72) 100%); }
-  .press__art {
-    position: relative; grid-column: 1; width: 100%; height: auto; max-width: 440px; justify-self: center;
-    -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
-            mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+  .press__plate {
+    grid-template-columns: 1fr; min-height: 0;
+    background: #b9b3d6 url(../img/press-tall.webp) center top / 100% auto no-repeat;
   }
-  .press__text { grid-column: 1; padding: 0 20px 28px; margin-top: -36px; }
+  .press__plate::before { background: linear-gradient(180deg, rgba(8, 34, 92, 0) 0, rgba(8, 34, 92, 0) 60vw, rgba(8, 34, 92, .76) calc(60vw + 110px), rgba(8, 34, 92, .80) 100%); }
+  .press__text { grid-column: 1; padding: 84vw 20px 28px; }
   .press h2 { text-align: center; }
   .press .btn { width: 100%; flex-wrap: wrap; font-size: 19px; }
   .float-wish { left: 16px; right: 16px; bottom: 14px; }
