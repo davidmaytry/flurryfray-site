@@ -24,8 +24,9 @@ FILES = {
     "capsules/library_capsule_600x900.png": STEAM / "library_capsule_600x900.png",
     "capsules/vertical_capsule_748x896.png": STEAM / "vertical_capsule_748x896.png",
 }
-# SS-532: re-shot with snowflakes tinted by the scene light (SS-507).
-SHOTS = ["cozy_a1_v2", "dusk_fight_a1_v2", "dusk_tree_a1_v2", "fight_a1_v2", "build_a1_v2", "split_a1_v2"]
+# SS-535: third shoot, the cocoa house in frame, plus the trip for cocoa.
+SHOTS = ["cozy_a1_v3", "dusk_fight_a1_v3", "dusk_tree_a1_v3", "fight_a1_v3", "build_a1_v3",
+         "house_a1_v3", "split_a1_v3"]
 
 
 def config():
