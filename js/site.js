@@ -54,6 +54,7 @@
   var hero = document.querySelector(".hero");
   var floatBtn = document.querySelector(".float-wish");
   var ctaBlock = document.querySelector(".facts .cta");
+  var jumpbar = document.querySelector(".jumpbar");
   if (hero && floatBtn && "IntersectionObserver" in window) {
     var heroGone = false, ctaSeen = false, sceneSeen = false;
     var sync = function () {
@@ -62,11 +63,35 @@
       floatBtn.classList.toggle("is-on", on);
       floatBtn.setAttribute("aria-hidden", on ? "false" : "true");
       floatBtn.tabIndex = on ? 0 : -1;
+      // SS-523: the quick links (snowball fight, press kit) follow the same rule
+      if (jumpbar) {
+        // On a phone the bar would sit on the headings, so there it only
+        // comes back when you scroll up (the hero has the same two links).
+        var jon = heroGone && !sceneSeen && (!phone.matches || goingUp);
+        jumpbar.classList.toggle("is-on", jon);
+        jumpbar.setAttribute("aria-hidden", jon ? "false" : "true");
+        $$(".jumpbar a").forEach(function (a) { a.tabIndex = jon ? 0 : -1; });
+      }
     };
+    var phone = window.matchMedia("(max-width: 699px)"), goingUp = false, lastY = window.scrollY;
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY, up = y < lastY - 4, down = y > lastY + 4;
+      if (up || down) { lastY = y; if (goingUp !== up) { goingUp = up; sync(); } }
+    }, { passive: true });
     new IntersectionObserver(function (e) { heroGone = !e[0].isIntersecting; sync(); }).observe(hero);
     var scene = document.querySelector("[data-scene]");
     if (scene) new IntersectionObserver(function (e) { sceneSeen = e[0].isIntersecting; sync(); }).observe(scene);
     if (ctaBlock) new IntersectionObserver(function (e) { ctaSeen = e[0].isIntersecting; sync(); }).observe(ctaBlock);
+  }
+
+  // --- deep links (/#fight, /#press) ----------------------------------------
+  // The snowball scene grows tall once its script runs, which moves everything
+  // below it; land on the anchor again after the page has settled.
+  if (location.hash.length > 1) {
+    window.addEventListener("load", function () {
+      var t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (t) requestAnimationFrame(function () { t.scrollIntoView({ behavior: "auto", block: "start" }); });
+    });
   }
 
   // --- gallery lightbox ----------------------------------------------------

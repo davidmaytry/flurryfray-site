@@ -21,6 +21,8 @@ IMG = ROOT / "img"
 VID = ROOT / "video"
 
 # Feature loops (and the big warming loop). Order does not matter here.
+# SS-523: the page now shows video/warming_dusk.* (shot separately at dusk);
+# "warming" here is the old daylight loop and is no longer on the page.
 CLIPS = ["warming", "volley", "fire", "snowman", "tree", "loot", "split"]
 # Gallery, in display order.
 SHOTS = ["cozy_a1", "dusk_fight_a1", "dusk_tree_a1", "fight_a1",

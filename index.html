@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Flurry Fray">
 <meta property="og:title" content="Flurry Fray — cozy 2v2 snowball fight">
-<meta property="og:description" content="Two teams. Two campfires. One field of fresh snow. A cozy snowball fight party game for 2–4 players.">
+<meta property="og:description" content="Two teams, two campfires, one field of fresh snow. A cozy snowball fight party game for 2–4 players.">
 <meta property="og:url" content="https://flurryfray.davidmaytry.com/">
 <meta property="og:image" content="https://flurryfray.davidmaytry.com/img/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="Flurry Fray: two kids build a snowman next to the game's ice logo at sunset">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Flurry Fray — cozy 2v2 snowball fight">
-<meta name="twitter:description" content="Two teams. Two campfires. One field of fresh snow. Wishlist on Steam.">
+<meta name="twitter:description" content="Two teams, two campfires, one field of fresh snow. Wishlist on Steam.">
 <meta name="twitter:image" content="https://flurryfray.davidmaytry.com/img/og.jpg">
 
 <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -30,9 +30,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
+<script>/* SS-523: background preview, ?theme=ice or ?theme=glass; the default page is unchanged */
+(function(){var m=/[?&]theme=(ice|glass)\b/.exec(location.search);if(m)document.documentElement.className+=" theme-"+m[1];})();</script>
 <script src="js/config.js"></script>
 <script src="js/site.js" defer></script>
 <script src="js/scene.js" defer></script>
+<script src="js/snowcap.js" defer></script>
 </head>
 <body>
 
@@ -42,11 +45,15 @@
     <h1 class="hero__logo">
       <img src="img/logo.webp" width="900" height="510" alt="Flurry Fray">
     </h1>
-    <p class="hero__tagline">A cozy snowball fight party game for 2–4&nbsp;players.</p>
-    <a class="btn btn--wishlist" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist>
+    <p class="hero__tagline">A cozy snowball fight party game for 2–4&nbsp;players</p>
+    <a class="btn btn--ice btn--big" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist data-snow="btn">
       <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4h2c.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>
-      Wishlist on Steam
+      <span class="btn__text"><span class="btn__title">Wishlist on Steam</span><span class="btn__sub">The game's Steam page</span></span>
     </a>
+    <nav class="jump" aria-label="Jump to">
+      <a class="pill" href="#fight"><svg class="pill__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Snowball fight</a>
+      <a class="pill" href="#press">Press kit</a>
+    </nav>
     <p class="hero__note">Release date: TBA &middot; PC &amp; Steam Deck</p>
   </div>
   <picture class="hero__art">
@@ -61,21 +68,21 @@
 
   <section class="intro" aria-labelledby="intro-title">
     <div class="wrap">
-      <h2 class="title" id="intro-title">Two teams. Two campfires.<br>One field of fresh&nbsp;snow.</h2>
-      <figure class="loop loop--big">
-        <video muted loop playsinline preload="metadata" poster="video/warming.webp" data-loop
-               aria-label="Two kids in different hats warm up by the campfire">
-          <source src="video/warming.mp4" type="video/mp4">
+      <h2 class="title" id="intro-title">Two teams, two campfires,<br>one field of fresh&nbsp;snow</h2>
+      <figure class="loop loop--big" data-snow>
+        <video muted loop playsinline preload="metadata" poster="video/warming_dusk.webp" data-loop
+               aria-label="Two kids in different hats warm up by the campfire at dusk">
+          <source src="video/warming_dusk.mp4" type="video/mp4">
         </video>
       </figure>
       <p class="lead">Keep your fire burning and put out theirs. The snow is the battlefield, and it keeps falling: dig trenches, pile up walls, plough through drifts. Cozy, silly, physical — <strong>not a survival game</strong>. No hunger, no crafting, no grind: just snow, friends and a campfire worth fighting&nbsp;for.</p>
     </div>
   </section>
 
-  <section class="scene" data-scene aria-label="A kid throws a snowball; it hits another kid in the face and he falls over">
+  <section class="scene" id="fight" data-scene aria-label="A kid throws a snowball; it hits another kid in the face and he falls over">
     <div class="scene__stage">
       <div class="scene__world" aria-hidden="true"></div>
-      <p class="scene__caption">Snow in the face.<br>Nobody gets&nbsp;hurt.</p>
+      <p class="scene__caption">Snow in the face,<br>nobody gets&nbsp;hurt</p>
       <p class="scene__hint" aria-hidden="true">Scroll</p>
     </div>
   </section>
@@ -85,7 +92,7 @@
       <h2 class="title" id="features-title">What you do in the snow</h2>
       <div class="cards">
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/volley.webp" data-loop
             aria-label="Two teams of kids in a snowball fight, wall against wall"><source src="video/volley.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -94,7 +101,7 @@
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/fire.webp" data-loop
             aria-label="A snowblower buries the rival campfire in snow; fuel makes your own fire melt the snow around it"><source src="video/fire.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -103,7 +110,7 @@
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/snowman.webp" data-loop
             aria-label="Two teammates stack a snowman together"><source src="video/snowman.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -112,7 +119,7 @@
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/tree.webp" data-loop
             aria-label="A kid hangs a toy on the team's Christmas tree"><source src="video/tree.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -121,7 +128,7 @@
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/loot.webp" data-loop
             aria-label="A kid thaws a flamethrower out of a block of ice by the campfire"><source src="video/loot.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -130,7 +137,7 @@
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-snow>
           <div class="card__media"><video muted loop playsinline preload="none" poster="video/split.webp" data-loop
             aria-label="Local splitscreen, one player against one"><source src="video/split.mp4" type="video/mp4"></video></div>
           <div class="card__body">
@@ -147,14 +154,14 @@
     <div class="wrap">
       <h2 class="title" id="gallery-title">Screenshots</h2>
       <ul class="shots">
-        <li><a href="img/shots/cozy_a1.webp" data-shot><img src="img/shots/cozy_a1-640.webp" width="640" height="360" loading="lazy" alt="Four kids warm their hands around a campfire at dusk"></a></li>
-        <li><a href="img/shots/dusk_fight_a1.webp" data-shot><img src="img/shots/dusk_fight_a1-640.webp" width="640" height="360" loading="lazy" alt="A snowball flies past the campfire at sunset"></a></li>
-        <li><a href="img/shots/dusk_tree_a1.webp" data-shot><img src="img/shots/dusk_tree_a1-640.webp" width="640" height="360" loading="lazy" alt="A decorated Christmas tree and a snowman by the campfire at dusk"></a></li>
-        <li><a href="img/shots/fight_a1.webp" data-shot><img src="img/shots/fight_a1-640.webp" width="640" height="360" loading="lazy" alt="Two teams of kids throw snowballs across a snow wall"></a></li>
-        <li><a href="img/shots/build_a1.webp" data-shot><img src="img/shots/build_a1-640.webp" width="640" height="360" loading="lazy" alt="A kid rolls a giant snowball towards a half-built snowman"></a></li>
-        <li><a href="img/shots/split_a1.webp" data-shot><img src="img/shots/split_a1-640.webp" width="640" height="360" loading="lazy" alt="Local splitscreen: two players face off in the snow"></a></li>
-        <li><a href="img/shots/field_3_a1.webp" data-shot><img src="img/shots/field_3_a1-640.webp" width="640" height="360" loading="lazy" alt="The whole snowfield from above, with a campfire and a Christmas tree"></a></li>
-        <li><a href="img/shots/field_2_a1.webp" data-shot><img src="img/shots/field_2_a1-640.webp" width="640" height="360" loading="lazy" alt="Both campfires at the ends of a snowfield covered in drifts and trenches"></a></li>
+        <li><a href="img/shots/cozy_a1.webp" data-shot data-snow><img src="img/shots/cozy_a1-640.webp" width="640" height="360" loading="lazy" alt="Four kids warm their hands around a campfire at dusk"></a></li>
+        <li><a href="img/shots/dusk_fight_a1.webp" data-shot data-snow><img src="img/shots/dusk_fight_a1-640.webp" width="640" height="360" loading="lazy" alt="A snowball flies past the campfire at sunset"></a></li>
+        <li><a href="img/shots/dusk_tree_a1.webp" data-shot data-snow><img src="img/shots/dusk_tree_a1-640.webp" width="640" height="360" loading="lazy" alt="A decorated Christmas tree and a snowman by the campfire at dusk"></a></li>
+        <li><a href="img/shots/fight_a1.webp" data-shot data-snow><img src="img/shots/fight_a1-640.webp" width="640" height="360" loading="lazy" alt="Two teams of kids throw snowballs across a snow wall"></a></li>
+        <li><a href="img/shots/build_a1.webp" data-shot data-snow><img src="img/shots/build_a1-640.webp" width="640" height="360" loading="lazy" alt="A kid rolls a giant snowball towards a half-built snowman"></a></li>
+        <li><a href="img/shots/split_a1.webp" data-shot data-snow><img src="img/shots/split_a1-640.webp" width="640" height="360" loading="lazy" alt="Local splitscreen: two players face off in the snow"></a></li>
+        <li><a href="img/shots/field_3_a1.webp" data-shot data-snow><img src="img/shots/field_3_a1-640.webp" width="640" height="360" loading="lazy" alt="The whole snowfield from above, with a campfire and a Christmas tree"></a></li>
+        <li><a href="img/shots/field_2_a1.webp" data-shot data-snow><img src="img/shots/field_2_a1-640.webp" width="640" height="360" loading="lazy" alt="Both campfires at the ends of a snowfield covered in drifts and trenches"></a></li>
       </ul>
     </div>
   </section>
@@ -170,9 +177,9 @@
         <div class="fact"><dt>Release</dt><dd>TBA</dd></div>
       </dl>
       <div class="cta">
-        <a class="btn btn--wishlist" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist>
+        <a class="btn btn--ice btn--big" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist data-snow="btn">
           <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4h2c.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>
-          Wishlist on Steam
+          <span class="btn__text"><span class="btn__title">Wishlist on Steam</span><span class="btn__sub">The game's Steam page</span></span>
         </a>
         <!-- Steam's own widget; js/site.js puts it here when SITE.steamWidget is true. -->
         <div class="steam-widget" data-steam-widget hidden></div>
@@ -183,16 +190,16 @@
   <section class="press" id="press" aria-labelledby="press-title">
     <div class="wrap">
       <div class="plate press__plate">
-        <img class="press__logo" src="img/logo.webp" width="900" height="510" alt="" loading="lazy">
+        <img class="press__capsule" src="img/capsule-462.webp" width="462" height="174" alt="Flurry Fray capsule art: two kids in a snowball fight under the game logo" loading="lazy">
         <div class="press__text">
           <h2 id="press-title">Press kit</h2>
           <p>Flurry Fray is a cozy snowball fight party game for 2–4 players. Team up 2v2 in local splitscreen or online, scoop snow and throw, roll a snowman, put out the rival team's campfire — or decorate your Christmas tree first.</p>
           <p class="press__meta">Developer: <span data-studio>davidmaytry</span> &middot; Engine: Godot &middot; Platform: PC (Steam), Steam Deck &middot; Release: TBA</p>
-          <a class="btn btn--plain" href="presskit.zip" download>
+          <a class="btn btn--glass" href="presskit.zip" download>
             <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.6l3.3-3.3 1.4 1.4L12 16.4 6.3 10.7l1.4-1.4 3.3 3.3V3zM4 18h16v2H4z"/></svg>
             Download press kit <small>(ZIP, <span data-zip-size>16 MB</span>)</small>
           </a>
-          <p class="press__contents">Logo, capsule art, key art, 6 screenshots and a fact sheet.</p>
+          <p class="press__contents">Logo, capsule art, key art, 6 screenshots and a fact sheet</p>
           <p class="press__contact">Press, creators and everything else: <a href="mailto:hello@davidmaytry.com" data-email>hello@davidmaytry.com</a></p>
         </div>
       </div>
@@ -209,13 +216,19 @@
   </div>
 </footer>
 
-<a class="float-wish btn btn--wishlist" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist aria-hidden="true" tabindex="-1">
+<a class="float-wish btn btn--ice" href="https://store.steampowered.com/app/5411930/" rel="noopener" data-wishlist data-snow="btn" aria-hidden="true" tabindex="-1">
   <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4h2c.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>
-  Wishlist
+  <span class="btn__title">Wishlist</span>
 </a>
 
+<!-- SS-523: quick links once the hero is gone; also deep links: /#fight, /#press -->
+<nav class="jumpbar" aria-label="Quick links" aria-hidden="true">
+  <a class="pill" href="#fight" tabindex="-1"><svg class="pill__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Snowball fight</a>
+  <a class="pill" href="#press" tabindex="-1">Press kit</a>
+</nav>
+
 <dialog class="lightbox" aria-label="Screenshot">
-  <img alt="">
+  <div class="lightbox__frame" data-snow><img alt=""></div>
   <button class="lightbox__btn lightbox__close" type="button" aria-label="Close">&times;</button>
   <button class="lightbox__btn lightbox__prev" type="button" aria-label="Previous screenshot">&lsaquo;</button>
   <button class="lightbox__btn lightbox__next" type="button" aria-label="Next screenshot">&rsaquo;</button>
