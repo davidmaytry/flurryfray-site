@@ -24,7 +24,8 @@ FILES = {
     "capsules/library_capsule_600x900.png": STEAM / "library_capsule_600x900.png",
     "capsules/vertical_capsule_748x896.png": STEAM / "vertical_capsule_748x896.png",
 }
-SHOTS = ["cozy_a1", "dusk_fight_a1", "dusk_tree_a1", "fight_a1", "build_a1", "split_a1"]
+# SS-532: re-shot with snowflakes tinted by the scene light (SS-507).
+SHOTS = ["cozy_a1_v2", "dusk_fight_a1_v2", "dusk_tree_a1_v2", "fight_a1_v2", "build_a1_v2", "split_a1_v2"]
 
 
 def config():

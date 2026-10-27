@@ -24,9 +24,12 @@ VID = ROOT / "video"
 # SS-523: the page now shows video/warming_dusk.* (shot separately at dusk);
 # "warming" here is the old daylight loop and is no longer on the page.
 CLIPS = ["warming", "volley", "fire", "snowman", "tree", "loot", "split"]
-# Gallery, in display order.
-SHOTS = ["cozy_a1", "dusk_fight_a1", "dusk_tree_a1", "fight_a1",
-         "build_a1", "split_a1", "field_3_a1", "field_2_a1"]
+# Gallery, in display order. SS-532: the _v2 shots are re-shot with snowflakes
+# tinted by the scene light (SS-507); the originals stay in screenshots/.
+# field_fire_a1_v2 replaced field_2_a1 (the whole arena from above, heroes
+# too small to read on a phone). field_3_a1 was already re-shot.
+SHOTS = ["cozy_a1_v2", "dusk_fight_a1_v2", "dusk_tree_a1_v2", "fight_a1_v2",
+         "build_a1_v2", "split_a1_v2", "field_3_a1", "field_fire_a1_v2"]
 
 
 def webp(im, path, width=None, q=82):
