@@ -56,8 +56,8 @@ Website:     https://flurryfray.davidmaytry.com/  ({url})
 Steam:       https://store.steampowered.com/app/{app}/
 Platform:    PC (Steam), Steam Deck
 Engine:      Godot
-Players:     2-4, made for 2v2
-Modes:       local splitscreen, online (IP / LAN), solo against bots
+Players:     teams of any size; up to 4 on one screen, more online
+Modes:       local splitscreen, online (Steam friends, LAN / IP), solo against bots
 Controls:    gamepad first, plays fully without a mouse
 Release:     TBA
 Contact:     {email}
