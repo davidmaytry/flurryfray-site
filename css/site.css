@@ -138,6 +138,8 @@ strong { font-weight: 900; }
 }
 .pill:hover { background: rgba(24, 30, 72, .62); transform: translateY(-1px); }
 .pill__icon { width: 14px; height: 14px; fill: currentColor; flex: none; }
+/* SS-612: Discord and Steam logos read best a bit larger than the play arrow */
+.pill__icon--brand { width: 18px; height: 18px; }
 .jump { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
 .jumpbar {
   position: fixed; top: 14px; right: 16px; z-index: 11;
@@ -414,7 +416,8 @@ main { overflow-x: clip; }
   .hero__tagline { font-size: 19px; margin-bottom: 18px; }
   .btn--big { font-size: 21px; min-height: 64px; padding: 10px 24px 10px 18px; }
   .btn--ice .btn__sub { font-size: 14px; }
-  .jump { gap: 8px; margin-top: 14px; }
+  .jump { gap: 6px; margin-top: 14px; }
+  .jump .pill { padding: 7px 12px; font-size: 14px; }
   .jumpbar { top: 10px; right: 10px; gap: 6px; }
   .jumpbar .pill { min-height: 36px; padding: 6px 12px; font-size: 14px; }
   .hero__art { margin-top: -56px; }
@@ -438,4 +441,11 @@ main { overflow-x: clip; }
   .float-wish { left: 16px; right: 16px; bottom: 14px; }
   .lightbox__btn { width: 48px; height: 48px; font-size: 30px; }
   .lightbox__prev, .lightbox__next { top: auto; bottom: 20px; transform: none; }
+}
+/* SS-612: on narrow phones Discord and Wishlist keep only the logo (round pill),
+   so all four quick links stay in one row down to 360 px */
+@media (max-width: 539px) {
+  .pill--brand .pill__label { display: none; }
+  .jump .pill--brand { width: 40px; padding: 0; justify-content: center; }
+  .jumpbar .pill--brand { width: 36px; padding: 0; justify-content: center; }
 }

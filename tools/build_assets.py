@@ -2,9 +2,10 @@
 
 Sources are only read, never changed:
   C:/Projects/Godot/Snowfolk/_context/steam/description/  (clips, screenshots)
-  D:/Important/Games/FlurryFray/Steam/Result/png/         (owner's Steam art)
+  D:/Important/Games/FlurryFray/Steam/Result_v1/png/      (owner's Steam art)
 
-    python tools/build_assets.py
+    python tools/build_assets.py                  # everything
+    python tools/build_assets.py loot house_a1_v4 # only these clips / shots
 
 Needs Pillow (with webp) and ffmpeg on PATH. Rerun after the Steam art changes.
 """
@@ -15,21 +16,25 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 DESC = Path("C:/Projects/Godot/Snowfolk/_context/steam/description")
-STEAM = Path("D:/Important/Games/FlurryFray/Steam/Result/png")
+# SS-612: the art folder was renamed Result -> Result_v1 (Result_v2 holds clips and shots).
+STEAM = Path("D:/Important/Games/FlurryFray/Steam/Result_v1/png")
 
 IMG = ROOT / "img"
 VID = ROOT / "video"
 
 # Feature loops (and the big warming loop). Order does not matter here.
 # SS-523: the page now shows video/warming_dusk.* (shot separately at dusk);
-# "warming" here is the old daylight loop and is no longer on the page.
-CLIPS = ["warming", "volley", "fire", "snowman", "tree", "loot", "split"]
+# SS-612: "warming" (the old daylight loop) is off the list, and so is "split":
+# the page keeps the SS-532 dusk take, while media/split.mp4 is now the daylight
+# re-shoot (SS-570). loot is the 29.10 re-shoot with the new flamethrower fire.
+CLIPS = ["volley", "fire", "snowman", "tree", "loot"]
 # Gallery, in display order. SS-535: the _v3 shots have the cocoa house in
 # frame (SS-525/529), plus the new "house" shot (the trip for cocoa). The older
 # _v2 / original shots stay in screenshots/. Eight, two even rows of four:
 # split left the gallery for house - splitscreen has its own feature loop.
+# SS-612: house_a1_v4 - the kid brings a shovel, not a snowblower (SS-598).
 SHOTS = ["cozy_a1_v3", "dusk_fight_a1_v3", "dusk_tree_a1_v3", "fight_a1_v3",
-         "build_a1_v3", "house_a1_v3", "field_3_a1_v3", "field_fire_a1_v3"]
+         "build_a1_v3", "house_a1_v4", "field_3_a1_v3", "field_fire_a1_v3"]
 
 
 def webp(im, path, width=None, q=82):
@@ -40,7 +45,36 @@ def webp(im, path, width=None, q=82):
     im.save(path, "WEBP", quality=q, method=6)
 
 
-def main():
+def main(only=()):
+    if only:
+        unknown = set(only) - set(SHOTS) - set(CLIPS)
+        if unknown:
+            raise SystemExit(f"not in SHOTS or CLIPS: {sorted(unknown)}")
+    else:
+        key_art()
+    for name in SHOTS:
+        if only and name not in only:
+            continue
+        im = Image.open(DESC / "screenshots" / f"{name}.png").convert("RGB")
+        webp(im, IMG / "shots" / f"{name}.webp", 1920, 84)
+        webp(im, IMG / "shots" / f"{name}-640.webp", 640, 78)
+
+    VID.mkdir(exist_ok=True)
+    for name in CLIPS:
+        if only and name not in only:
+            continue
+        src = DESC / "media" / f"{name}.mp4"
+        # Same picture, no audio track, moov atom first so it starts at once.
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-c", "copy",
+                        "-an", "-map_metadata", "-1", "-movflags", "+faststart",
+                        str(VID / f"{name}.mp4")], check=True)
+        still = Image.open(DESC / "media" / f"{name}.png").convert("RGB")
+        webp(still, VID / f"{name}.webp", 1170, 76)
+
+    print("done")
+
+
+def key_art():
     hero = Image.open(STEAM / "library_hero_3840x1240.png").convert("RGB")
     webp(hero, IMG / "hero-2400.webp", 2400, 80)
     webp(hero, IMG / "hero-1280.webp", 1280, 80)
@@ -64,23 +98,7 @@ def main():
     icon.resize((192, 192), Image.LANCZOS).save(IMG / "icon-192.png", optimize=True)
     icon.save(ROOT / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
 
-    for name in SHOTS:
-        im = Image.open(DESC / "screenshots" / f"{name}.png").convert("RGB")
-        webp(im, IMG / "shots" / f"{name}.webp", 1920, 84)
-        webp(im, IMG / "shots" / f"{name}-640.webp", 640, 78)
-
-    VID.mkdir(exist_ok=True)
-    for name in CLIPS:
-        src = DESC / "media" / f"{name}.mp4"
-        # Same picture, no audio track, moov atom first so it starts at once.
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-c", "copy",
-                        "-an", "-movflags", "+faststart", str(VID / f"{name}.mp4")],
-                       check=True)
-        still = Image.open(DESC / "media" / f"{name}.png").convert("RGB")
-        webp(still, VID / f"{name}.webp", 1170, 76)
-
-    print("done")
-
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(sys.argv[1:])

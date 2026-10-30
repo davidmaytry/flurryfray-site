@@ -14,7 +14,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 DESC = Path("C:/Projects/Godot/Snowfolk/_context/steam/description")
-STEAM = Path("D:/Important/Games/FlurryFray/Steam/Result/png")
+STEAM = Path("D:/Important/Games/FlurryFray/Steam/Result_v1/png")  # SS-612: was Result/
 
 FILES = {
     "logo/flurry_fray_logo.png": STEAM / "library_logo.png",
@@ -25,8 +25,9 @@ FILES = {
     "capsules/vertical_capsule_748x896.png": STEAM / "vertical_capsule_748x896.png",
 }
 # SS-535: third shoot, the cocoa house in frame, plus the trip for cocoa.
+# SS-612: house_a1_v4 - the kid brings a shovel to the house, not a snowblower.
 SHOTS = ["cozy_a1_v3", "dusk_fight_a1_v3", "dusk_tree_a1_v3", "fight_a1_v3", "build_a1_v3",
-         "house_a1_v3", "split_a1_v3"]
+         "house_a1_v4", "split_a1_v3"]
 
 
 def config():
@@ -91,7 +92,7 @@ def main():
     page = ROOT / "index.html"
     html = page.read_text(encoding="utf-8")
     html = re.sub(r"(<span data-zip-size>)[^<]*(</span>)", rf"\g<1>{mb:.0f} MB\g<2>", html)
-    page.write_text(html, encoding="utf-8")
+    page.write_text(html, encoding="utf-8", newline="\n")  # SS-612: keep LF on Windows
     print(out, round(mb, 1), "MB")
 
 
